@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+  namespace: ha
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      app: home-assistant
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      containers:
+        - name: home-assistant
+          image: ghcr.io/home-assistant/home-assistant:2024.9.3
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "4Gi"
+              cpu: "4"
+          ports:
+            - containerPort: 8123
+          volumeMounts:
+            - mountPath: /config
+              name: home-assistant-content
+      volumes:
+        - name: home-assistant-content
+          persistentVolumeClaim:
+            claimName: home-assistant-claim
+      hostNetwork: true
