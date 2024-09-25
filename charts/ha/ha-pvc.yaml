@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: homeassistant-pv-config
+  name: home-assistant-claim
   namespace: ha
   labels:
     app: home-assistant
