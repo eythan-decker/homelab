@@ -31,7 +31,7 @@ spec:
               memory: "4Gi"
               cpu: "4"
           ports:
-            - containerPort: 8123
+            - containerPort: 8124
           volumeMounts:
             - mountPath: /config
               name: home-assistant-content

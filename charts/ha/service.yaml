@@ -9,5 +9,5 @@ spec:
     app: home-assistant
   ports:
     - protocol: TCP
-      port: 8123
-      targetPort: 8123
+      port: 8124
+      targetPort: 8124
