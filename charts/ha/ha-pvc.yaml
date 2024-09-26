@@ -8,7 +8,7 @@ metadata:
     app: home-assistant
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   storageClassName: local-path
   resources:
     requests:
