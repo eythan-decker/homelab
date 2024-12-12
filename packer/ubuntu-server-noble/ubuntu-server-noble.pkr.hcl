@@ -31,7 +31,7 @@ source "proxmox-iso" "ubuntu-server-noble" {
     insecure_skip_tls_verify = true
     
     # VM General Settings
-    node = "pve"
+    node = "pve01"
     vm_id = "8001"
     vm_name = "ubuntu-server-noble"
     template_description = "Ubuntu Server noble Image"
@@ -55,7 +55,7 @@ source "proxmox-iso" "ubuntu-server-noble" {
     disks {
         disk_size = "32G"
         format = "raw"
-        storage_pool = "local-lvm"
+        storage_pool = "pve01-zfs"
         type = "virtio"
     }
 

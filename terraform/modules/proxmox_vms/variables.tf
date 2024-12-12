@@ -1,7 +1,7 @@
 variable "proxmox_node_name" {
     type = string
     description = "Name of the Proxmox Node to deploy the VMs"
-    default = "pve"
+    default = "pve01"
 }
 
 variable "vm_template_name" {
@@ -18,7 +18,7 @@ variable "vm_id_list" {
 variable "vm_class_name" {
     type = string
     description = "Name of the class of VM that is being deployed. Ella, Elliot, Ezra, Emily"
-    default = "pve"
+    default = "pve-vm"
 }
 
 variable "vm_desc" {

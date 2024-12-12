@@ -3,7 +3,7 @@ terraform {
         required_providers {
             proxmox = {
              source = "telmate/proxmox"
-                version = "3.0.1-rc3"
+                version = "3.0.1-rc6"
             }
         }
     }
@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "pve_vm" {
     
     # VM General Settings
     count = length(var.vm_id_list)
-    target_node = "pve"
+    target_node = "pve01"
     vmid = var.vm_id_list[count.index]
     name = "${var.vm_class_name}-${random_string.vm_suffix[count.index].id}"
     desc = var.vm_desc
@@ -30,7 +30,7 @@ resource "proxmox_vm_qemu" "pve_vm" {
     # VM CPU Settings
     cores = var.vm_cpu_cores
     sockets = 1
-    cpu = "host"    
+    cpu_type = "host"    
     
     # VM Memory Settings
     memory = var.vm_memory
@@ -50,7 +50,7 @@ resource "proxmox_vm_qemu" "pve_vm" {
         virtio {
             virtio0 {
                 disk {
-                    storage = "local-lvm"
+                    storage = "pve01-zfs"
                     size = "32G"
                 }
             }
@@ -59,6 +59,7 @@ resource "proxmox_vm_qemu" "pve_vm" {
 
     # VM Network Settings
     network {
+        id     = 0
         bridge = "vmbr0"
         model  = "virtio"
     }
