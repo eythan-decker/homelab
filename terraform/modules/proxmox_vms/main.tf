@@ -14,8 +14,8 @@ resource "proxmox_vm_qemu" "pve_vm" {
     count = length(var.vm_id_list)
     target_node = "pve01"
     vmid = var.vm_id_list[count.index]
-    name = "${var.vm_class_name}-${random_string.vm_suffix[count.index].id}"
-    desc = var.vm_desc
+    name = "${var.vm_class_name}-${var.vm_id_list[count.index]}"
+    desc = var.vm_desc[count.index]
 
     # VM Advanced General Settings
     onboot = true 
@@ -50,8 +50,14 @@ resource "proxmox_vm_qemu" "pve_vm" {
         virtio {
             virtio0 {
                 disk {
-                    storage = "pve01-zfs"
+                    storage = "local-lvm"
                     size = "32G"
+                }
+            }
+            virtio1 {
+                disk {
+                    storage = "pve01-zfs"
+                    size = "64G"
                 }
             }
         }

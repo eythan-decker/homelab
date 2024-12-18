@@ -22,7 +22,7 @@ variable "vm_class_name" {
 }
 
 variable "vm_desc" {
-    type = string
+    type = list(string)
     description = "Description of the VM to be displayed in the proxmox UI"
 }
 
@@ -39,11 +39,4 @@ variable "vm_memory" {
 variable "vm_serveradmin_password" {
     type = string
     sensitive = true
-}
-
-resource "random_string" "vm_suffix" {
-  count = length(var.vm_id_list)
-  length           = 5
-  special          = true
-  override_special = "-."
 }

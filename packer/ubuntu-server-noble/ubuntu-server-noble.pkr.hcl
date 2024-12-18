@@ -55,7 +55,7 @@ source "proxmox-iso" "ubuntu-server-noble" {
     disks {
         disk_size = "32G"
         format = "raw"
-        storage_pool = "pve01-zfs"
+        storage_pool = "local-lvm"
         type = "virtio"
     }
 
