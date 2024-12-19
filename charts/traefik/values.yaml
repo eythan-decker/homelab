@@ -23,7 +23,6 @@ ports:
   # Dashboard port
   traefik:
     port: 9000
-    expose: true
     exposedPort: 9000
   web:
     port: 8000
