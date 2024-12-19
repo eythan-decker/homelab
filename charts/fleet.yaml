@@ -1,0 +1,7 @@
+defaultNamespace: traefik-system
+helm:
+  chart: https://traefik.github.io/charts
+  version: 1.0.0
+  valuesFiles:
+  - ./values.yaml
+  releaseName: traefik
