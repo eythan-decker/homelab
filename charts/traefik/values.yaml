@@ -8,13 +8,9 @@ additionalArguments:
   - "--api.insecure=true"
   - "--api.dashboard=true"
 
-api:
-  dashboard: true
-  insecure: true
-
 deployment:
   enabled: true
-  replicas: 2
+  replicas: 1
   annotations: {}
   podAnnotations: {}
   additionalContainers: []
@@ -38,3 +34,7 @@ providers:
     enabled: true
   kubernetesIngress:
     enabled: true
+
+logs:
+  general:
+    level: DEBUG
