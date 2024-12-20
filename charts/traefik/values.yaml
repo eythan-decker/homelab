@@ -18,6 +18,11 @@ deployment:
 ingressRoute:
   dashboard:
     enabled: true
+    matchRule: Host(`192.168.10.35`)
+    entryPoints: ["websecure"]
+    # Add custom middlewares : authentication and redirection
+    middlewares:
+      - name: traefik-dashboard-basicauth
 
 service:
   enabled: true
@@ -40,25 +45,6 @@ logs:
     level: DEBUG
 
 extraObjects:
-- apiVersion: traefik.io/v1alpha1
-  kind: IngressRoute
-  metadata:
-    name: traefik-dashboard
-    namespace: traefik-system
-    annotations: 
-      kubernetes.io/ingress.class: traefik-external
-  spec:
-    entryPoints:
-      - websecure
-    routes:
-      - match: Host(`192.168.10.35`)
-        kind: Rule
-        middlewares:
-          - name: traefik-dashboard-basicauth
-            namespace: traefik-system
-        services:
-          - name: api@internal
-            kind: TraefikService
 - apiVersion: traefik.io/v1alpha1
   kind: Middleware
   metadata:
