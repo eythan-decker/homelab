@@ -1,12 +1,12 @@
 globalArguments:
   - "--global.sendanonymoususage=false"
   - "--global.checknewversion=false"
-  - "--api.insecure=true"
-  - "--api.dashboard=true"
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
+  - "--api.insecure=true"
+  - "--api.dashboard=true"
 
 api:
   dashboard: true
@@ -20,16 +20,9 @@ deployment:
   additionalContainers: []
 
 ports:
-  # Dashboard port
-  traefik:
-    port: 9000
-    exposedPort: 9000
   web:
-    port: 8000
-    exposedPort: 80
-  websecure:
-    port: 8443
-    exposedPort: 443
+    redirectTo:
+      port: websecure
 
 ingressRoute:
   dashboard:
