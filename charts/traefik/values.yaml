@@ -19,11 +19,6 @@ deployment:
   podAnnotations: {}
   additionalContainers: []
 
-ports:
-  web:
-    redirectTo:
-      port: websecure
-
 ingressRoute:
   dashboard:
     enabled: true
