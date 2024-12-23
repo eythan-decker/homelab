@@ -17,7 +17,7 @@ deployment:
 ingressRoute:
   dashboard:
     enabled: true
-    matchRule: Host(`192.168.10.35`)
+    matchRule: Host(`traefik.local.192.168.10.35`)
     entryPoints: ["websecure"]
     # Add custom middlewares : authentication and redirection
     middlewares:
