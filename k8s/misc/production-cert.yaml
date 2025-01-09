@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: moria-lab-cert
+  namespace: default
+spec:
+  secretName: moria-lab-cert
+  issuerRef:
+    name: letsencrypt-production
+    kind: Issuer
+  commonName: "*.moria-lab.com"
+  dnsNames:
+  - "moria-lab.com"
+  - "*.moria-lab.com"
