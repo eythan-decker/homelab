@@ -27,6 +27,8 @@ ingressRoute:
     # Add custom middlewares : authentication and redirection
     middlewares:
       - name: traefik-dashboard-basicauth
+    tls:
+      secretName: local-example-com-tls
 
 service:
   enabled: true
