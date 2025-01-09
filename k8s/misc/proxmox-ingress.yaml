@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxmox-ui
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8006
+  type: ExternalName
+  externalName: 192.168.10.6
+  
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: proxmox-ui
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`proxmox.moria-lab.com`)
+      kind: Rule
+      services:
+        - name: proxmox-ui
+          port: 80
+  tls:
+    secretName: moria-lab-cert
