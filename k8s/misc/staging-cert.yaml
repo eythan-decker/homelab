@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: moria-lab-staging-cert
+  namespace: default
+spec:
+  secretName: moria-lab-staging-cert
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.moria-lab.com"
+  dnsNames:
+  - "moria-lab.com"
+  - "*.moria-lab.com"
