@@ -7,7 +7,7 @@ spec:
   secretName: moria-lab-cert
   issuerRef:
     name: letsencrypt-production
-    kind: Issuer
+    kind: ClusterIssuer
   commonName: "*.moria-lab.com"
   dnsNames:
   - "moria-lab.com"
