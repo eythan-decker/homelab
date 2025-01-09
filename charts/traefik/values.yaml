@@ -28,7 +28,7 @@ ingressRoute:
     middlewares:
       - name: traefik-dashboard-basicauth
     tls:
-      secretName: local-example-com-tls
+      secretName: moria-lab-cert
 
 service:
   enabled: true
