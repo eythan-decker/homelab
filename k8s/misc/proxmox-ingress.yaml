@@ -4,10 +4,12 @@ metadata:
   name: proxmox-ui
 spec:
   ports:
-    - protocol: TCP
-      port: 80
+    - name: proxmoxUI
+      protocol: TCP
+      port: 8006
+      targetPort: 8006
   type: ExternalName
-  externalName: 192.168.10.6:8006
+  externalName: 192.168.10.6
 
 ---
 apiVersion: traefik.io/v1alpha1
@@ -24,6 +26,6 @@ spec:
       kind: Rule
       services:
         - name: proxmox-ui
-          port: 80
+          port: 8006
   tls:
     secretName: moria-lab-cert
