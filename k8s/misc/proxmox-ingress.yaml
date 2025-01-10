@@ -4,7 +4,7 @@ metadata:
   name: proxmox-ui
 spec:
   ports:
-    - name: proxmoxUI
+    - name: proxmox-ui
       protocol: TCP
       port: 8006
       targetPort: 8006
