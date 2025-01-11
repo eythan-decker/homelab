@@ -7,7 +7,7 @@ spec:
     - name: rancher-ui
       protocol: TCP
       port: 443
-      targetPort: 8006
+      targetPort: 443
   type: ExternalName
   externalName: 192.168.10.202.sslip.io
 ---
