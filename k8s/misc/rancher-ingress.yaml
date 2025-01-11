@@ -6,8 +6,8 @@ spec:
   ports:
     - name: rancher-ui
       protocol: TCP
-      port: 443
-      targetPort: 443
+      port: 80
+      targetPort: 80
   type: ExternalName
   externalName: 192.168.10.202.sslip.io
 ---
@@ -25,6 +25,6 @@ spec:
       kind: Rule
       services:
         - name: rancher-ui
-          port: 443
+          port: 80
   tls:
     secretName: moria-lab-cert
