@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: rancher-ui
 spec:
+  ports:
+    - name: rancher-ui
+      protocol: TCP
+      port: 80
   type: ExternalName
   externalName: 192.168.10.202.sslip.io
 ---
@@ -20,5 +24,6 @@ spec:
       kind: Rule
       services:
         - name: rancher-ui
+          port: 80
   tls:
     secretName: moria-lab-cert
