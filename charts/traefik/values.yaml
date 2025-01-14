@@ -58,6 +58,7 @@ logs:
     level: DEBUG
   access:
     enabled: true
+    filePath: "/var/log/traefik/access.log"
 
 extraObjects:
 - apiVersion: traefik.io/v1alpha1
