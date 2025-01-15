@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: proxmox-ui
+  name: https-proxmox-ui
   annotations: 
     traefik.ingress.kubernetes.io/service.serversscheme: https
 spec:
   ports:
-    - name: proxmox-ui
+    - name: https-proxmox-ui
       protocol: TCP
       port: 8006
       targetPort: 8006
@@ -16,7 +16,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: proxmox-ui
+  name: https-proxmox-ui
   annotations: 
     kubernetes.io/ingress.class: traefik-external
 spec:
@@ -26,7 +26,7 @@ spec:
     - match: Host(`proxmox.moria-lab.com`)
       kind: Rule
       services:
-        - name: proxmox-ui
+        - name: https-proxmox-ui
           port: 8006
   tls:
     secretName: moria-lab-cert
