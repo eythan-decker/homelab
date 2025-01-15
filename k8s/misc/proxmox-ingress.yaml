@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: proxmox-ui
+  annotations: 
+    traefik.ingress.kubernetes.io/service.serversscheme: https
 spec:
   ports:
     - name: proxmox-ui
