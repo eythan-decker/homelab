@@ -35,5 +35,13 @@ spec:
       services:
         - name: proxmox-ui
           port: 443
+          serversTransport: selfsigned
   tls:
     secretName: moria-lab-cert
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: ServersTransport
+metadata:
+  name: selfsigned
+spec:
+  insecureSkipVerify: true
