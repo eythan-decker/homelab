@@ -8,19 +8,9 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 8006
+  externalName: 192.168.10.6
 ---
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: proxmox-ui
-subsets:
-  - addresses:
-      - ip: 192.168.10.6
-    ports:
-      - name: http
-        port: 8006
----
-apiVersion: traefik.io/v1alpha1
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: proxmox-ui
@@ -35,13 +25,5 @@ spec:
       services:
         - name: proxmox-ui
           port: 443
-          serversTransport: selfsigned
   tls:
     secretName: moria-lab-cert
----
-apiVersion: traefik.io/v1alpha1
-kind: ServersTransport
-metadata:
-  name: selfsigned
-spec:
-  insecureSkipVerify: true
