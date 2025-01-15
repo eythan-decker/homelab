@@ -6,7 +6,7 @@ spec:
   ports:
     - name: proxmox-ui
       protocol: TCP
-      port: 443
+      port: 8006
       targetPort: 8006
   type: ExternalName
   externalName: 192.168.10.6
@@ -25,6 +25,6 @@ spec:
       kind: Rule
       services:
         - name: proxmox-ui
-          port: 443
+          port: 8006
   tls:
     secretName: moria-lab-cert
