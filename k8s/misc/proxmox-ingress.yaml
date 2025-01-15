@@ -8,6 +8,7 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 8006
+  type: ExternalName
   externalName: 192.168.10.6
 ---
 apiVersion: traefik.io/v1alpha1
