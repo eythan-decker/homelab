@@ -1,0 +1,70 @@
+globalArguments:
+  - "--global.sendanonymoususage=false"
+  - "--global.checknewversion=false"
+
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--providers.kubernetesingress.allowexternalnameservices"
+  - "--providers.kubernetescrd.allowexternalnameservices"
+
+
+deployment:
+  enabled: true
+  replicas: 1
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+
+ports:
+  web:
+    redirectTo:
+      port: websecure
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`192.168.10.35`) || Host(`traefik.moria-lab.com`)
+    entryPoints: ["websecure"]
+    # Add custom middlewares : authentication and redirection
+    middlewares:
+      - name: traefik-dashboard-basicauth
+    tls:
+      secretName: moria-lab-cert
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  labels: {}
+  spec:
+    loadBalancerIP: "192.168.10.35"
+  loadBalancerSourceRanges: []
+  externalIPs: []
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+    allowExternalNameServices: true
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: false
+
+logs:
+  general:
+    level: DEBUG
+  access:
+    enabled: true
+    filePath: "/var/log/traefik/access.log"
+
+extraObjects:
+- apiVersion: traefik.io/v1alpha1
+  kind: Middleware
+  metadata:
+    name: traefik-dashboard-basicauth
+    namespace: traefik-system
+  spec:
+    basicAuth:
+      secret: traefik-dashboard-auth-secret
