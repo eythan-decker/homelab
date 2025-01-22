@@ -9,8 +9,8 @@ spec:
     app: home-assistant
   ports:
     - protocol: TCP
-      port: 8124
-      targetPort: 8124
+      port: 8123
+      targetPort: 8123
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -26,6 +26,6 @@ spec:
       kind: Rule
       services:
         - name: home-assistant
-          port: 8124
+          port: 8123
   tls:
     secretName: moria-lab-cert

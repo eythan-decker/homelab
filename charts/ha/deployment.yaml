@@ -12,7 +12,7 @@ spec:
       app: home-assistant
   replicas: 1
   progressDeadlineSeconds: 600
-  revisionHistoryLimit: 2
+  revisionHistoryLimit: 5
   strategy:
     type: Recreate
   template:
@@ -31,7 +31,7 @@ spec:
               memory: "4Gi"
               cpu: "4"
           ports:
-            - containerPort: 8124
+            - containerPort: 8123
           volumeMounts:
             - mountPath: /config
               name: home-assistant-content
