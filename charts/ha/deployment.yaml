@@ -39,4 +39,22 @@ spec:
         - name: home-assistant-content
           persistentVolumeClaim:
             claimName: home-assistant-claim
+        - name: configmap-file
+          configMap:
+            name: home-assistant-configmap
       hostNetwork: true
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: home-assistant-configmap
+  namespace: home-assistant
+data:
+  known_devices.yaml: |
+  automations.yaml: |
+  configuration.yaml: |-
+    default_config:
+    http:
+      use_x_forwarded_for: true
+      trusted_proxies:
+        - 192.168.10.35
