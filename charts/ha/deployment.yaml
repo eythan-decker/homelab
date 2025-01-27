@@ -60,6 +60,9 @@ data:
     frontend:
       themes: !include_dir_merge_named themes
     automation: !include automations.yaml
+    network:
+      ignore_devices:
+        - 192.168.3.0/24 # Ignore treehouse network
     http:
       use_x_forwarded_for: true
       trusted_proxies:
