@@ -1,0 +1,8 @@
+defaultNamespace: monitoring
+helm:
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: kube-prometheus-stack
+  version: 69.2.4
+  valuesFiles:
+  - ./values.yaml
+  releaseName: prometheus-community
