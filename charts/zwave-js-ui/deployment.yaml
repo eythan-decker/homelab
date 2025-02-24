@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zwave
+  namespace: zwave
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: zwave
+  template:
+    metadata:
+      labels:
+        name: zwave
+    spec:
+      containers:
+      - name: zwave
+        image: zwavejs/zwave-js-ui:9.30.1
+        ports:
+        - containerPort: 8091
+          name: http
+          protocol: TCP
+        - containerPort: 3000
+          name: websocket
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: "250m"
+            memory: 400Mi
+        securityContext:
+          allowPrivilegeEscalation: true
+          privileged: true
+        volumeMounts:
+        - mountPath: /dev/zwave
+          name: zwavestick
+        - mountPath: /usr/src/app/store
+          name: data
+        # - mountPath: /usr/src/app/store/settings.json <-- if putting your settings.json in a secret
+        #   name: config
+        #   readOnly: true
+        #   subPath: settings.json
+     # nodeSelector:  Add later if I end up adding a 2nd k8s worker node.
+     #   kubernetes.io/hostname: stick1 #<--- the name of your cluster node that the zwave usb stick in
+      volumes:
+      # - name: config <-- if putting your settings.json in a secret
+      #   secret:
+      #     defaultMode: 420
+      #     secretName: zwave-js-ui
+      - name: zwavestick
+        hostPath:
+          # Do not use /dev/ttyUSBX serial devices, as those mappings can change over time.
+          # Instead, use the /dev/serial/by-id/X serial device for your Z-Wave stick.
+          path: /dev/serial/by-id/usb-Zooz_800_Z-Wave_Stick_533D004242-if00
+          type: CharDevice
+      - name: data
+        hostPath:
+          path: /zwave/data
