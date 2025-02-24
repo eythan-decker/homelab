@@ -38,9 +38,7 @@ spec:
         - mountPath: /mosquitto/config/
           name: config
         - mountPath: /mosquitto/data/
-          name: data
-        - mountPath: /mosquitto/log/
-          name: log
+          name: mosquitto-data
       volumes:
         - name: config
           configMap:
