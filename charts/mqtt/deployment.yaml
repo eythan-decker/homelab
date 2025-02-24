@@ -36,15 +36,32 @@ spec:
           protocol: TCP
         volumeMounts:
         - mountPath: /mosquitto/config/
-          name: mosquitto
-          subPath: config
-        - mountPath: "/mosquitto/data"
-          name: mosquitto
-          subPath: "data"
-        - mountPath: "/mosquitto/log"
-          name: mosquitto
-          subPath: log
+          name: config
+        - mountPath: /mosquitto/data/
+          name: data
+        - mountPath: /mosquitto/log/
+          name: log
       volumes:
-        - name: mosquitto
+        - name: config
+          configMap:
+            name: mosquitto-config
+        - name: mosquitto-data
           persistentVolumeClaim:
-            claimName: mosquitto
+            claimName: mosquitto-data
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+  namespace:  mqtt
+data:
+  mosquitto.conf: |
+    allow_anonymous true
+
+    persistence true
+    persistence_location /mosquitto/data/
+
+    log_dest stdout
+
+    listener 8883
+    protocol mqtt
