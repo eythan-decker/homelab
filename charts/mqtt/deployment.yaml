@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mosquitto
+  name: mosquitto
+  namespace: mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - image: eclipse-mosquitto:2.0.20
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 0.5
+            memory: 500Mi
+          requests:
+            cpu: "250m"
+            memory: 100Mi
+        name: mosquitto
+        ports:
+        - containerPort: 1883
+          name: mqtt
+          protocol: TCP
+        - containerPort: 9001
+          name: websocket
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /mosquitto/config/
+          name: config
+        - mountPath: /mosquitto/data/
+          name: mosquitto-data
+      volumes:
+        - name: config
+          configMap:
+            name: mosquitto-config
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-data
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+  namespace:  mqtt
+data:
+  mosquitto.conf: |
+    allow_anonymous true
+
+    persistence true
+    persistence_location /mosquitto/data/
+
+    log_dest stdout
+
+    listener 1883
+    protocol mqtt
