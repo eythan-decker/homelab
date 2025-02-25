@@ -61,5 +61,5 @@ data:
 
     log_dest stdout
 
-    listener 8883
+    listener 1883
     protocol mqtt
