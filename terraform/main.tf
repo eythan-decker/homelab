@@ -8,7 +8,7 @@ module "ella_class_vms" {
   vm_class_name = "pve-ella"
   vm_template_name = "ubuntu-server-noble"
   proxmox_node_name = "pve01"
-  vm_desc = ["Ella Class VM. k3s master1", "Ella Class VM. k3s master2", "Ella Class VM. k3s master3", "Ella Class VM. Rancher Admin Cluster"]
+  vm_desc = ["Ella Class VM. k3s master1", "Ella Class VM. k3s master2", "Ella Class VM. k3s master3", "Ella Class VM. Critical K3s worker node non HA."]
   vm_cpu_cores = 4
   vm_memory = 4096
   vm_serveradmin_password = var.serveradmin_password
