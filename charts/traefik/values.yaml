@@ -10,10 +10,16 @@ additionalArguments:
 
 deployment:
   enabled: true
-  replicas: 1
+  replicas: 3
   annotations: {}
   podAnnotations: {}
   additionalContainers: []
+
+updateStrategy:  
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1  
+    maxSurge: 1        
 
 ports:
   web:
