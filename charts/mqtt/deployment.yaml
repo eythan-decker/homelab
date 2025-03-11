@@ -46,6 +46,8 @@ spec:
         - name: mosquitto-data
           persistentVolumeClaim:
             claimName: mosquitto-data
+      nodeSelector:
+        node-role: home-assistant
 ---
 apiVersion: v1
 kind: ConfigMap

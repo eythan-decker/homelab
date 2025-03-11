@@ -46,6 +46,8 @@ spec:
           configMap:
             name: home-assistant-configmap
       hostNetwork: true
+      nodeSelector:
+        node-role: home-assistant
 ---
 kind: ConfigMap
 apiVersion: v1

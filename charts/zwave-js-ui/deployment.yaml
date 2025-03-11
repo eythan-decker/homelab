@@ -13,6 +13,8 @@ spec:
       labels:
         name: zwave
     spec:
+      nodeSelector:
+        node-role: home-assistant
       containers:
       - name: zwave
         image: zwavejs/zwave-js-ui:9.30.1
