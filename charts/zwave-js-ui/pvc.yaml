@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: home-assistant-claim
-  namespace: ha
+  name: zwave-claim
+  namespace: zwave
   labels:
-    app: home-assistant
+    app: zwave
 spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: longhorn
   resources:
     requests:
-      storage: 5Gi
+      storage: 2Gi

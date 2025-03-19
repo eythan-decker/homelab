@@ -58,5 +58,5 @@ spec:
           path: /dev/serial/by-id/usb-Zooz_800_Z-Wave_Stick_533D004242-if00
           type: CharDevice
       - name: data
-        hostPath:
-          path: /zwave/data
+        persistentVolumeClaim:
+          claimName: zwave-claim
