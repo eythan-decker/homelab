@@ -63,4 +63,5 @@ data:
     http:
       use_x_forwarded_for: true
       trusted_proxies:
-        - 10.0.0.0/8
+        - 192.168.10.0/24 # Anything on homelab subnet
+        - 10.0.0.0/8 # Anything on local k8s network
