@@ -13,16 +13,16 @@ defaultRules:
     kubeApiserverHistogram: true
     kubeApiserverSlos: true
     kubelet: true
-    kubeProxy: true
+    kubeProxy: false
     kubePrometheusGeneral: true
     kubePrometheusNodeRecording: true
     kubernetesApps: true
     kubernetesResources: true
     kubernetesStorage: true
     kubernetesSystem: true
-    kubeScheduler: true
-    kubeStateMetrics: true
-    network: true
+    kubeScheduler: false
+    kubeStateMetrics: false
+    network: false
     node: true
     nodeExporterAlerting: true
     nodeExporterRecording: true
@@ -69,7 +69,7 @@ kubeControllerManager:
     - 192.168.10.218
 
 coreDns:
-  enabled: true
+  enabled: false
 
 kubeDns:
   enabled: false
@@ -152,7 +152,7 @@ prometheus-node-exporter:
       memory: 512Mi
       cpu: 250m
     limits:
-      memory: 2048Mi
+      memory: 1024Mi
       cpu: 1
 
 prometheusOperator:
@@ -175,11 +175,11 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
-    retention: 6h
+    retention: 3d
     enableAdminAPI: true
     walCompression: true
-    scrapeInterval: 30s
-    evaluationInterval: 30s
+    scrapeInterval: 60s
+    evaluationInterval: 60s
 
 thanosRuler:
   enabled: false
