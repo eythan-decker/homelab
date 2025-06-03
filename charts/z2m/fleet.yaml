@@ -4,7 +4,7 @@ helm:
   chart: zigbee2mqtt
   version: 2.4.0
   releaseName: z2m
-  values:
-    - values.yaml
+  valuesFiles:
+  - ./values.yaml
 kustomize:
   dir: overlays/dev
