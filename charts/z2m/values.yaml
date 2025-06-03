@@ -1,0 +1,26 @@
+zigbee2mqtt:
+  serial:
+    port: /dev/ttyACM0
+    baudrate: 115200
+  mqtt:
+    server: "mqtt://mosquitto-service.homeassistant.svc.cluster.local:8883"
+    user: "mqtt-user"
+    password: "password"
+  homeassistant:
+    enabled: true
+  frontend:
+    port: 8080
+    enabled: true
+  permit_join: false
+
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClass: longhorn
+
+securityContext:
+  privileged: true
+
+env:
+  - name: TZ
+    value: Europe/London 

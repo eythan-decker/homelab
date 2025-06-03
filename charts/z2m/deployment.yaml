@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: z2m
+  namespace: zigbee
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: z2m
+  template:
+    metadata:
+      labels:
+        app: z2m
+    spec:
+      nodeSelector:
+        node-role: home-assistant
+      containers:
+      - name: z2m
+        image: koenkk/zigbee2mqtt:2.4.0
+        env:
+          - name: TZ
+            value: America/New_York
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
+            value: "mqtt://192.168.10.36:1883"
+          - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT
+            value: "true"
+        securityContext:
+          privileged: true
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: z2m-data
+            mountPath: /app/data
+          - name: z2m-udev
+            mountPath: /run/udev
+          - name: ttyacm
+            mountPath: /dev/ttyACM0
+      volumes:
+        - name: z2m-data
+          persistentVolumeClaim:
+            claimName: z2m-claim
+        - name: z2m-udev
+          hostPath:
+            path: /run/udev
+        - name: ttyacm
+          hostPath:
+            path: /dev/ttyACM0
