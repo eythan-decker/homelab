@@ -1,0 +1,27 @@
+zigbee2mqtt:
+  serial:
+    port: tcp://192.168.10.8:6638
+    adapter: zstack
+  mqtt:
+    server: "mqtt://192.168.10.36:1883"
+  homeassistant:
+    enabled: true
+  frontend:
+    port: 8080
+    enabled: true
+  permit_join: false
+
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClass: longhorn
+
+statefulset:
+  storage:
+    enabled: true
+    size: 2Gi
+    storageClassName: longhorn
+  nodeSelector:
+    node-role: home-assistant
+
+timezone: America/New_York 
