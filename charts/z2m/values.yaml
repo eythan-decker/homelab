@@ -11,11 +11,6 @@ zigbee2mqtt:
     enabled: true
   permit_join: false
 
-persistence:
-  enabled: true
-  size: 2Gi
-  storageClass: longhorn
-
 statefulset:
   storage:
     enabled: true
@@ -24,4 +19,7 @@ statefulset:
   nodeSelector:
     node-role: home-assistant
 
-timezone: America/New_York 
+timezone: America/New_York
+
+service:
+  type: ClusterIP

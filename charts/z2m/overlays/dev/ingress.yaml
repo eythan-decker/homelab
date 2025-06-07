@@ -12,7 +12,7 @@ spec:
     - match: Host(`z2m.moria-lab.com`)
       kind: Rule
       services:
-        - name: z2m
+        - name: z2m-zigbee2mqtt
           port: 8080
   tls:
     secretName: moria-lab-cert
