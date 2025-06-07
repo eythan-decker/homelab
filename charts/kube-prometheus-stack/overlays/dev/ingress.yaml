@@ -11,7 +11,7 @@ spec:
     - match: Host(`grafana.moria-lab.com`)
       kind: Rule
       services:
-        - name: kube-prometheus-stack-grafana
+        - name: grafana
           port: 80
   tls:
     secretName: moria-lab-cert 
