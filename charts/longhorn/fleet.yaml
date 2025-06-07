@@ -4,6 +4,9 @@ helm:
   chart: longhorn
   version: v1.8.1
   releaseName: longhorn
+  values:
+    persistence:
+      defaultClassReplicaCount: 2
 kustomize:
   dir: overlays/dev
 diff:
