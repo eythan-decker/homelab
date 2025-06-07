@@ -6,3 +6,5 @@ helm:
   valuesFiles:
   - ./values.yaml
   releaseName: prometheus-community
+kustomize:
+  dir: overlays/dev
