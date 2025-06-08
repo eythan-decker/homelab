@@ -1,0 +1,10 @@
+defaultNamespace: monitoring
+helm:
+  repo: https://grafana.github.io/helm-charts
+  chart: loki
+  version: 6.31.0
+  valuesFiles:
+  - ./values.yaml
+  releaseName: loki
+kustomize:
+  dir: overlays/dev

@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: loki-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`loki.moria-lab.com`)
+      kind: Rule
+      services:
+        - name: loki
+          port: 3100
+  tls:
+    secretName: moria-lab-cert
