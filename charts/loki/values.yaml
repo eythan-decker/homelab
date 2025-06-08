@@ -18,7 +18,7 @@ loki:
       - from: 2025-06-08
         object_store: filesystem
         store: tsdb
-        schema: v12
+        schema: v13
         index:
           prefix: moria_lab_
           period: 24h
