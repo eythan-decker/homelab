@@ -13,6 +13,16 @@ loki:
       chunks_directory: '/var/loki/chunks'
       rules_directory: '/var/loki/rules'
   
+  schemaConfig:
+    configs:
+      - from: 2025-06-08
+        object_store: filesystem
+        store: tsdb
+        schema: v12
+        index:
+          prefix: moria_lab_
+          period: 24h
+  
   limits_config:
     retention_period: 720h  # 30 days
     max_query_length: 12h
