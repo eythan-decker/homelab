@@ -2,7 +2,7 @@ defaultNamespace: monitoring
 helm:
   repo: https://grafana.github.io/helm-charts
   chart: loki
-  version: 6.31.0
+  version: 6.30.1
   valuesFiles:
   - ./values.yaml
   releaseName: loki
