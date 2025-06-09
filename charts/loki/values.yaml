@@ -15,7 +15,7 @@ loki:
   
   schemaConfig:
     configs:
-      - from: 2025-06-08
+      - from: 2024-01-01
         object_store: filesystem
         store: tsdb
         schema: v13
