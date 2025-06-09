@@ -1,0 +1,96 @@
+# Grafana Alloy configuration for log collection
+alloy:
+  mode: 'flow'
+  
+  # Stability level for the agent
+  stabilityLevel: 'generally-available'
+  
+  # Configure the config file
+  configMap:
+    create: true
+    content: |
+      // Log collection and forwarding to Loki
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      // Discover pods and collect logs
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // Extract log targets from discovered pods
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+        
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          target_label  = "node"
+        }
+        
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+        
+      }
+
+      // Collect logs from pods
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.write.loki.receiver]
+      }
+
+      // Forward logs to Loki
+      loki.write "loki" {
+        endpoint {
+          url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+# Controller configuration
+controller:
+  type: 'daemonset'
+  
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+      
+  # Node selector to ensure pods run on all nodes
+  nodeSelector: {}
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+
+# ServiceAccount permissions
+serviceAccount:
+  create: true
+  
+rbac:
+  create: true
+
+# Service monitor for Prometheus
+serviceMonitor:
+  enabled: true
