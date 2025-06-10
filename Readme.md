@@ -72,6 +72,7 @@ Currently, I have playbooks for basic bootstrap automation after my proxmox clus
 - qemu guest agent install
 - reboot
 - reboot-required (check if system reboot is required)
+- inotify limits increase (fixes "too many open files" errors in Kubernetes)
 
 Update the hosts file per your current environment.
 To test connection with hosts:
@@ -145,6 +146,8 @@ charts/<app>/
 | Application | Version | Purpose | Namespace |
 |-------------|---------|---------|-----------|
 | **kube-prometheus-stack** | v69.2.4 | Prometheus, Grafana, AlertManager monitoring stack | `monitoring` |
+| **Loki** | 6.30.1 | Log aggregation and storage system | `monitoring` |
+| **Grafana Alloy** | 1.1.1 | Telemetry data collection and forwarding agent | `monitoring` |
 
 ### Home Automation Platform
 

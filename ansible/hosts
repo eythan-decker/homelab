@@ -5,6 +5,8 @@
 192.168.10.78
 192.168.10.211
 
+[servers:vars]
+ansible_user=serveradmin
 
 [test]
 192.168.10.60

@@ -1,0 +1,73 @@
+---
+- name: Fix inotify limits on Kubernetes nodes
+  hosts: servers
+  become: true
+  gather_facts: true
+  
+  vars:
+    inotify_settings:
+      - { key: "fs.inotify.max_user_watches", value: "524288" }
+      - { key: "fs.inotify.max_user_instances", value: "8192" }
+      - { key: "fs.inotify.max_queued_events", value: "32768" }
+  
+  tasks:
+    - name: Display current node information
+      debug:
+        msg: "Processing node: {{ inventory_hostname }} ({{ ansible_default_ipv4.address }})"
+    
+    - name: Check current inotify limits
+      shell: |
+        echo "max_user_watches: $(cat /proc/sys/fs/inotify/max_user_watches)"
+        echo "max_user_instances: $(cat /proc/sys/fs/inotify/max_user_instances)"
+        echo "max_queued_events: $(cat /proc/sys/fs/inotify/max_queued_events)"
+      register: current_limits
+      changed_when: false
+    
+    - name: Display current inotify limits
+      debug:
+        msg: "{{ current_limits.stdout_lines }}"
+    
+    - name: Backup existing sysctl.conf
+      copy:
+        src: /etc/sysctl.conf
+        dest: "/etc/sysctl.conf.backup-{{ ansible_date_time.epoch }}"
+        remote_src: yes
+        backup: yes
+      tags: backup
+    
+    - name: Add inotify settings to sysctl.conf
+      lineinfile:
+        path: /etc/sysctl.conf
+        line: "{{ item.key }}={{ item.value }}"
+        regexp: "^{{ item.key }}.*"
+        state: present
+      loop: "{{ inotify_settings }}"
+      register: sysctl_changes
+      tags: configure
+    
+    - name: Apply sysctl settings immediately
+      sysctl:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+      loop: "{{ inotify_settings }}"
+      tags: apply
+    
+    - name: Verify new inotify limits
+      shell: |
+        echo "max_user_watches: $(cat /proc/sys/fs/inotify/max_user_watches)"
+        echo "max_user_instances: $(cat /proc/sys/fs/inotify/max_user_instances)"
+        echo "max_queued_events: $(cat /proc/sys/fs/inotify/max_queued_events)"
+      register: new_limits
+      changed_when: false
+      tags: verify
+    
+    - name: Display new inotify limits
+      debug:
+        msg: "{{ new_limits.stdout_lines }}"
+      tags: verify
+
+  handlers:
+    - name: reload sysctl
+      command: sysctl -p
