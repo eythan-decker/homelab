@@ -80,19 +80,15 @@ kubectl get pv
 kubectl get pvc --all-namespaces
 
 # Check ingress resources
-kubectl get ingress --all-namespaces
-kubectl describe ingress <ingress-name> -n <namespace>
+kubectl get ingressroute --all-namespaces
+kubectl describe ingressroute <ingress-name> -n <namespace>
 
-# View configmaps and secrets
+# View configmaps
 kubectl get configmaps --all-namespaces
-kubectl get secrets --all-namespaces
 
 # Check cluster events
 kubectl get events --all-namespaces --sort-by='.lastTimestamp'
 
-# View resource quotas and limits
-kubectl get resourcequota --all-namespaces
-kubectl get limitrange --all-namespaces
 ```
 
 ## GitOps Application Deployment
