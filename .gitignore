@@ -35,5 +35,6 @@ credentials.pkr.hcl
 *.log
 
 # Project specific ignores
-secret.yaml
-charts/rancher/*
+*secret*
+k8s/rancherAdminCluster/
+charts/traefik/ingressExample/

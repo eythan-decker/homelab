@@ -49,6 +49,52 @@ ansible-playbook -i hosts playbooks/reboot.yml
 ansible-playbook -i hosts playbooks/reboot-required.yml
 ```
 
+### Kubernetes Cluster Information
+```bash
+# List all pods across all namespaces
+kubectl get pods --all-namespaces
+
+# Get pod details in specific namespace
+kubectl get pods -n <namespace>
+kubectl describe pod <pod-name> -n <namespace>
+
+# View pod logs
+kubectl logs <pod-name> -n <namespace>
+kubectl logs -f <pod-name> -n <namespace>  # Follow logs
+
+# Get services and endpoints
+kubectl get services --all-namespaces
+kubectl get endpoints --all-namespaces
+
+# View deployments and their status
+kubectl get deployments --all-namespaces
+kubectl describe deployment <deployment-name> -n <namespace>
+
+# Check node status and resources
+kubectl get nodes
+kubectl describe node <node-name>
+kubectl top nodes  # Resource usage
+
+# View persistent volumes and claims
+kubectl get pv
+kubectl get pvc --all-namespaces
+
+# Check ingress resources
+kubectl get ingress --all-namespaces
+kubectl describe ingress <ingress-name> -n <namespace>
+
+# View configmaps and secrets
+kubectl get configmaps --all-namespaces
+kubectl get secrets --all-namespaces
+
+# Check cluster events
+kubectl get events --all-namespaces --sort-by='.lastTimestamp'
+
+# View resource quotas and limits
+kubectl get resourcequota --all-namespaces
+kubectl get limitrange --all-namespaces
+```
+
 ## GitOps Application Deployment
 
 ### Fleet Configuration Patterns
