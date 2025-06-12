@@ -60,7 +60,7 @@ providers:
 
 logs:
   general:
-    level: DEBUG
+    level: INFO
   access:
     enabled: true
     filePath: "/var/log/traefik/access.log"
