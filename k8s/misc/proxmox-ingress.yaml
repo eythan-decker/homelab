@@ -28,5 +28,4 @@ spec:
       services:
         - name: https-proxmox-ui
           port: 8006
-  tls:
-    secretName: moria-lab-cert
+  tls: {}

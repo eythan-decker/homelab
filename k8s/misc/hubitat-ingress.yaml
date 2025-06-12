@@ -25,5 +25,4 @@ spec:
       services:
         - name: hubitat-ui
           port: 80
-  tls:
-    secretName: moria-lab-cert
+  tls: {}
