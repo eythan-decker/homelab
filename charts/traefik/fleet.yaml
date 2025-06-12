@@ -6,3 +6,5 @@ helm:
   valuesFiles:
   - ./values.yaml
   releaseName: traefik
+kustomize:
+  dir: overlays/dev

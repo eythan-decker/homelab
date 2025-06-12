@@ -34,8 +34,7 @@ ingressRoute:
     # Add custom middlewares : authentication and redirection
     middlewares:
       - name: traefik-dashboard-basicauth
-    tls:
-      secretName: moria-lab-cert
+    tls: {}
 
 service:
   enabled: true

@@ -14,5 +14,4 @@ spec:
       services:
         - name: longhorn-frontend
           port: 80
-  tls:
-    secretName: moria-lab-cert
+  tls: {}

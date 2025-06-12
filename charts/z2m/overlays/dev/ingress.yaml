@@ -14,5 +14,4 @@ spec:
       services:
         - name: z2m-zigbee2mqtt
           port: 8080
-  tls:
-    secretName: moria-lab-cert
+  tls: {}
