@@ -34,8 +34,7 @@ ingressRoute:
     # Add custom middlewares : authentication and redirection
     middlewares:
       - name: traefik-dashboard-basicauth
-    tls:
-      secretName: moria-lab-cert
+    tls: {}
 
 service:
   enabled: true
@@ -61,7 +60,7 @@ providers:
 
 logs:
   general:
-    level: DEBUG
+    level: INFO
   access:
     enabled: true
     filePath: "/var/log/traefik/access.log"
