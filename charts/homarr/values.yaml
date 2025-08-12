@@ -5,7 +5,7 @@ env:
 # Database configuration - SQLite with PVC persistence
 # Requires secret with db-encryption-key
 database:
-  existingSecret: homarr-secret
+  existingSecret: db-secret
   secretKey: db-encryption-key
 
 # PVC persistence configuration
