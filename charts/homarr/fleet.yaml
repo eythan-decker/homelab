@@ -1,6 +1,6 @@
 defaultNamespace: homarr
 helm:
-  repo: oci://ghcr.io/homarr-labs/charts
+  repo: https://homarr-labs.github.io/charts/
   chart: homarr
   version: 5.7.0
   releaseName: homarr
