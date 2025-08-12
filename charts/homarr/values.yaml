@@ -1,0 +1,23 @@
+# Homarr configuration
+env:
+  TZ: America/New_York
+
+# Database configuration - SQLite with PVC persistence
+# Requires secret with db-encryption-key
+database:
+  existingSecret: homarr-secret
+  secretKey: db-encryption-key
+
+# PVC persistence configuration
+persistence:
+  homarrDatabase:
+    enabled: true
+    storageClassName: longhorn
+    size: 2Gi
+    accessModes:
+      - ReadWriteOnce
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 7575
