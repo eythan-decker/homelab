@@ -141,6 +141,12 @@ charts/<app>/
 | **traefik** | v33.2.1 | Reverse proxy, load balancer, and ingress controller | `traefik-system` |
 | **longhorn** | v1.8.1 | Distributed block storage with 2-replica HA | `longhorn-system` |
 
+### Dashboard & Management
+
+| Application | Version | Purpose | Namespace |
+|-------------|---------|---------|-----------|
+| **Homarr** | v5.7.0 | Customizable homelab dashboard and service portal | `homarr` |
+
 ### Monitoring & Observability
 
 | Application | Version | Purpose | Namespace |
@@ -176,6 +182,7 @@ All services are accessible via the `moria-lab.com` domain on my local network o
 
 | Service | URL |
 |---------|-----|
+| **Homarr Dashboard** | `homarr.moria-lab.com` |
 | **Traefik Dashboard** | `traefik.moria-lab.com` |
 | **Grafana** | `grafana.moria-lab.com` |
 | **Longhorn UI** | `longhorn.moria-lab.com` |

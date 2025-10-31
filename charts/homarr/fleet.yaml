@@ -1,0 +1,10 @@
+defaultNamespace: homarr
+helm:
+  repo: https://homarr-labs.github.io/charts/
+  chart: homarr
+  version: 5.7.0
+  releaseName: homarr
+  valuesFiles:
+  - ./values.yaml
+kustomize:
+  dir: overlays/dev
