@@ -2,7 +2,7 @@ defaultNamespace: zigbee
 helm:
   repo: https://charts.zigbee2mqtt.io
   chart: zigbee2mqtt
-  version: 2.4.0
+  version: 2.6.2
   releaseName: z2m
   valuesFiles:
   - ./values.yaml
