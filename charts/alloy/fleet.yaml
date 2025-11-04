@@ -2,7 +2,7 @@ defaultNamespace: monitoring
 helm:
   repo: https://grafana.github.io/helm-charts
   chart: alloy
-  version: 1.1.1
+  version: 1.4.0
   valuesFiles:
   - ./values.yaml
   releaseName: alloy
