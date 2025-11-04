@@ -2,7 +2,7 @@ defaultNamespace: homarr
 helm:
   repo: https://homarr-labs.github.io/charts/
   chart: homarr
-  version: 5.7.0
+  version: 8.2.0
   releaseName: homarr
   valuesFiles:
   - ./values.yaml
