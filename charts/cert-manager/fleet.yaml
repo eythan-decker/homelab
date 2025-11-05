@@ -2,7 +2,7 @@ defaultNamespace: cert-manager
 helm:
   repo: https://charts.jetstack.io
   chart: cert-manager
-  version: 1.17.2
+  version: 1.19.1
   valuesFiles:
   - ./values.yaml
   releaseName: cert-manager
