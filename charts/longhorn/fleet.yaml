@@ -2,7 +2,7 @@ defaultNamespace: longhorn-system
 helm:
   repo: https://charts.longhorn.io
   chart: longhorn
-  version: v1.8.1
+  version: v1.10.0
   releaseName: longhorn
   values:
     persistence:
