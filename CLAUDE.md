@@ -189,3 +189,78 @@ SSL certificates managed by cert-manager with Cloudflare DNS challenge using `mo
 - **Ingress problems**: Verify Traefik configuration and LoadBalancer IP
 
 The repository uses the domain `moria-lab.com` with static IP `192.168.10.35` for the Traefik LoadBalancer service.
+
+---
+
+## Pull Request Template
+
+When creating pull requests for this repository, use the following format to ensure consistent documentation:
+
+### PR Title Format
+Use conventional commit style:
+- `chore:` - Routine tasks, dependency updates, maintenance
+- `feat:` - New features or applications
+- `fix:` - Bug fixes and corrections
+- `docs:` - Documentation updates
+- `refactor:` - Code restructuring without functional changes
+
+**Example:** `chore: upgrade Traefik to v37.2.0 with syntax migration`
+
+### PR Body Structure
+
+```markdown
+## Summary
+
+[1-2 sentences describing what the PR does and why]
+
+## Changes
+
+- **file/path**: Brief description of what changed
+- **file/path**: Brief description of what changed
+- **file/path**: Brief description of what changed
+
+## Technical Details
+
+[Optional section for complex changes]
+
+### [Subsection Title if Needed]
+[Technical explanation, architecture notes, or breaking changes]
+
+**Before:**
+```yaml
+[code example if applicable]
+```
+
+**After:**
+```yaml
+[code example if applicable]
+```
+
+### References
+- [Link to documentation]
+- [Link to related issue/PR]
+- [Link to upstream changelog]
+
+## Testing
+
+[Optional section - include verification steps if applicable]
+
+Fleet GitOps will deploy this automatically upon merge. Verify:
+- [Specific thing to check]
+- [Specific thing to check]
+- [Specific thing to check]
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+### When to Use Each Section
+
+- **Summary**: Always required - explains the "what" and "why"
+- **Changes**: Always required - lists modified files with brief context
+- **Technical Details**: Use for breaking changes, syntax migrations, or complex updates
+- **References**: Use when relevant docs, issues, or upstream changes exist
+- **Testing**: Use when specific verification steps are needed post-deployment
+
+### Example PRs
+
+See PR #29 for a complete example of this template in action (Traefik v37.2.0 upgrade).
