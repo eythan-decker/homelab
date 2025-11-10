@@ -2,7 +2,7 @@ defaultNamespace: traefik-system
 helm:
   repo: https://traefik.github.io/charts
   chart: traefik
-  version: 33.2.1
+  version: 37.2.0
   valuesFiles:
   - ./values.yaml
   releaseName: traefik

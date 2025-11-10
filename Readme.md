@@ -138,7 +138,7 @@ charts/<app>/
 | Application | Version | Purpose | Namespace |
 |-------------|---------|---------|-----------|
 | **cert-manager** | v1.17.2 | SSL certificate automation with Let's Encrypt | `cert-manager` |
-| **traefik** | v33.2.1 | Reverse proxy, load balancer, and ingress controller | `traefik-system` |
+| **traefik** | v37.2.0 | Reverse proxy, load balancer, and ingress controller | `traefik-system` |
 | **longhorn** | v1.8.1 | Distributed block storage with 2-replica HA | `longhorn-system` |
 
 ### Dashboard & Management

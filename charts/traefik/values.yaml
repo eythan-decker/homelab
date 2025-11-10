@@ -23,8 +23,11 @@ updateStrategy:
 
 ports:
   web:
-    redirectTo:
-      port: websecure
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
 
 ingressRoute:
   dashboard:
