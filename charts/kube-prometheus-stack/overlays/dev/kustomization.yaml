@@ -4,4 +4,7 @@ kind: Kustomization
 namespace: monitoring
 
 resources:
-  - ingress.yaml 
+  - ingress.yaml
+  - prometheusrules/gitops-cert-manager-expiration-prometheus.yaml
+  - prometheusrules/gitops-cert-manager-expiration-loki.yaml
+  - prometheusrules/gitops-cert-manager-errors.yaml 

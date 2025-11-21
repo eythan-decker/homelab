@@ -1,0 +1,38 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gitops-cert-manager-errors
+  namespace: monitoring
+  labels:
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+    loki: "true"
+spec:
+  groups:
+    - name: gitops-cert-manager.errors
+      interval: 1m
+      rules:
+        - alert: GitOpsCertManagerErrors
+          expr: |
+            sum(rate({namespace="cert-manager"} |~ "(?i)(error|failed|failure)" [5m])) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+            component: cert-manager
+          annotations:
+            summary: "cert-manager experiencing errors"
+            description: "cert-manager has logged {{ $value }} errors per second over the last 5 minutes. Review cert-manager logs for details."
+            explore_url: "https://grafana.moria-lab.com/explore?schemaVersion=1&panes=%7B%22md9%22:%7B%22datasource%22:%22eeohbrg94r30ga%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bnamespace%3D%5C%22cert-manager%5C%22%7D%20%7C%7E%20%5C%22(%3Fi)(error%7Cfailed%7Cfailure)%5C%22%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22eeohbrg94r30ga%22%7D,%22editorMode%22:%22code%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1"
+
+        - alert: GitOpsCertManagerACMEChallengeFailure
+          expr: |
+            sum(count_over_time({namespace="cert-manager"} |~ "(?i)(acme.*challenge.*failed|dns.*challenge.*failed)" [5m])) > 0
+          for: 5m
+          labels:
+            severity: critical
+            component: cert-manager
+          annotations:
+            summary: "ACME challenge failures detected"
+            description: "cert-manager has {{ $value }} ACME challenge failures in the last 5 minutes. Certificate renewal may be blocked. Verify DNS configuration and Cloudflare API credentials."
+            explore_url: "https://grafana.moria-lab.com/explore?schemaVersion=1&panes=%7B%22md9%22:%7B%22datasource%22:%22eeohbrg94r30ga%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bnamespace%3D%5C%22cert-manager%5C%22%7D%20%7C%7E%20%5C%22(%3Fi)(acme.*challenge.*failed%7Cdns.*challenge.*failed)%5C%22%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22eeohbrg94r30ga%22%7D,%22editorMode%22:%22code%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1"
+            runbook_url: "https://cert-manager.io/docs/troubleshooting/acme/"

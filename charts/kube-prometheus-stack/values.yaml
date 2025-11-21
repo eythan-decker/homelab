@@ -34,6 +34,29 @@ alertmanager:
   enabled: true
   ingress:
     enabled: false
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'namespace', 'severity']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      receiver: 'homelab-discord'
+      routes:
+        - match:
+            severity: warning
+          receiver: 'homelab-discord'
+          continue: true
+        - match:
+            severity: critical
+          receiver: 'homelab-discord'
+          continue: true
+    receivers:
+      - name: 'homelab-discord'
+        webhook_configs:
+          - url: 'http://alertmanager-discord.monitoring.svc.cluster.local:9094'
+            send_resolved: true
 
 grafana:
   enabled: true
