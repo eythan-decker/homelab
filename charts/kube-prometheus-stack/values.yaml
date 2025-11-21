@@ -42,18 +42,18 @@ alertmanager:
       group_wait: 10s
       group_interval: 10s
       repeat_interval: 12h
-      receiver: 'homelab-discord'
+      receiver: 'gitops-homelab-discord'
       routes:
         - match:
             severity: warning
-          receiver: 'homelab-discord'
+          receiver: 'gitops-homelab-discord'
           continue: true
         - match:
             severity: critical
-          receiver: 'homelab-discord'
+          receiver: 'gitops-homelab-discord'
           continue: true
     receivers:
-      - name: 'homelab-discord'
+      - name: 'gitops-homelab-discord'
         webhook_configs:
           - url: 'http://alertmanager-discord.monitoring.svc.cluster.local:9094'
             send_resolved: true
