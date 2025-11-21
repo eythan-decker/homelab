@@ -5,6 +5,4 @@ namespace: monitoring
 
 resources:
   - ingress.yaml
-  - prometheusrules/gitops-cert-manager-expiration-prometheus.yaml
-  - prometheusrules/gitops-cert-manager-expiration-loki.yaml
-  - prometheusrules/gitops-cert-manager-errors.yaml 
+  - prometheusrules/gitops-cert-manager-expiration-prometheus.yaml 
