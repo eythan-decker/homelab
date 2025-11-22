@@ -37,6 +37,10 @@ alertmanager:
   alertmanagerSpec:
     secrets:
       - alertmanager-discord-webhook
+    alertmanagerConfigSelector:
+      matchLabels:
+        alertmanagerConfig: gitops-discord
+    alertmanagerConfigNamespaceSelector: {}
   config:
     global:
       resolve_timeout: 5m
@@ -45,21 +49,9 @@ alertmanager:
       group_wait: 10s
       group_interval: 10s
       repeat_interval: 12h
-      receiver: 'gitops-homelab-discord'
-      routes:
-        - match:
-            severity: warning
-          receiver: 'gitops-homelab-discord'
-          continue: true
-        - match:
-            severity: critical
-          receiver: 'gitops-homelab-discord'
-          continue: true
+      receiver: 'null'
     receivers:
-      - name: 'gitops-homelab-discord'
-        discord_configs:
-          - webhook_url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhook/webhook-url'
-            send_resolved: true
+      - name: 'null'
 
 grafana:
   enabled: true
