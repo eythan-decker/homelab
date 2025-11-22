@@ -34,6 +34,9 @@ alertmanager:
   enabled: true
   ingress:
     enabled: false
+  alertmanagerSpec:
+    secrets:
+      - alertmanager-discord-webhook
   config:
     global:
       resolve_timeout: 5m
@@ -55,7 +58,7 @@ alertmanager:
     receivers:
       - name: 'gitops-homelab-discord'
         webhook_configs:
-          - url: 'http://alertmanager-discord.monitoring.svc.cluster.local:9094'
+          - url_file: '/etc/alertmanager/secrets/alertmanager-discord-webhook/webhook-url'
             send_resolved: true
 
 grafana:
