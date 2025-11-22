@@ -9,3 +9,12 @@ podDnsConfig:
   nameservers:
     - 1.1.1.1
     - 9.9.9.9
+
+# Enable Prometheus metrics for certificate monitoring
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true
+    namespace: monitoring
+    labels:
+      prometheus: kube-prometheus-stack-prometheus
