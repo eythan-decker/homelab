@@ -41,6 +41,8 @@ alertmanager:
       matchLabels:
         alertmanagerConfig: gitops-discord
     alertmanagerConfigNamespaceSelector: {}
+    alertmanagerConfigMatcherStrategy:
+      type: None
   config:
     global:
       resolve_timeout: 5m
