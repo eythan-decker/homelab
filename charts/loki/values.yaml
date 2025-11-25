@@ -62,7 +62,14 @@ gateway:
 monitoring:
   serviceMonitor:
     enabled: true
-    
+
+# Cache configuration - conservative allocations based on actual usage
+chunksCache:
+  allocatedMemory: 1024  # MB, results in 1229Mi request (1024 * 1.2)
+
+resultsCache:
+  allocatedMemory: 256   # MB, results in 307Mi request (256 * 1.2)
+
 # Test configuration
 test:
   enabled: false
