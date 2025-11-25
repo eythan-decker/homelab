@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: gitops-discord-alerts
+  namespace: monitoring
+  labels:
+    alertmanagerConfig: gitops-discord
+spec:
+  route:
+    receiver: 'gitops-discord-receiver'
+    groupBy: ['alertname', 'namespace', 'severity']
+    groupWait: 10s
+    groupInterval: 10s
+    repeatInterval: 12h
+    routes:
+      - matchers:
+          - name: severity
+            value: warning
+        receiver: 'gitops-discord-receiver'
+        continue: true
+      - matchers:
+          - name: severity
+            value: critical
+        receiver: 'gitops-discord-receiver'
+        continue: true
+  receivers:
+    - name: 'gitops-discord-receiver'
+      discordConfigs:
+        - apiURL:
+            name: alertmanager-discord-webhook
+            key: webhook-url
+          sendResolved: true

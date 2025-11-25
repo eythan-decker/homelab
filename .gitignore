@@ -38,3 +38,9 @@ credentials.pkr.hcl
 *secret*
 k8s/rancherAdminCluster/
 charts/traefik/ingressExample/
+
+# Temporary/working files
+PLATFORM_AUDIT_RECOMMENDATIONS.md
+lesson-plan.md
+receiver-homelab-discord
+alert-cert-manager.yml

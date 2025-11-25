@@ -151,7 +151,7 @@ charts/<app>/
 
 | Application | Version | Purpose | Namespace |
 |-------------|---------|---------|-----------|
-| **kube-prometheus-stack** | v69.2.4 | Prometheus, Grafana, AlertManager monitoring stack | `monitoring` |
+| **kube-prometheus-stack** | v69.2.4 | Prometheus metrics, Grafana dashboards, AlertManager with Discord notifications | `monitoring` |
 | **Loki** | 6.30.1 | Log aggregation and storage system | `monitoring` |
 | **Grafana Alloy** | 1.1.1 | Telemetry data collection and forwarding agent | `monitoring` |
 

@@ -1,0 +1,55 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gitops-cert-manager-expiration-prometheus
+  namespace: monitoring
+  labels:
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: gitops-cert-manager.expiration
+      interval: 5m
+      rules:
+        - alert: GitOpsCertificateExpiringSoon
+          expr: |
+            avg by (name, namespace) (
+              certmanager_certificate_expiration_timestamp_seconds - time()
+            ) < (21 * 24 * 60 * 60)
+          for: 5m
+          labels:
+            severity: warning
+            component: cert-manager
+          annotations:
+            summary: "Certificate {{ $labels.name }} expiring in {{ $value | humanizeDuration }}"
+            description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} will expire in less than 21 days. Current time until expiry: {{ $value | humanizeDuration }}"
+            dashboard: "https://grafana.moria-lab.com/d/cert-manager"
+            runbook_url: "https://cert-manager.io/docs/troubleshooting/"
+
+        - alert: GitOpsCertificateExpiringCritical
+          expr: |
+            avg by (name, namespace) (
+              certmanager_certificate_expiration_timestamp_seconds - time()
+            ) < (7 * 24 * 60 * 60)
+          for: 5m
+          labels:
+            severity: critical
+            component: cert-manager
+          annotations:
+            summary: "CRITICAL: Certificate {{ $labels.name }} expiring in {{ $value | humanizeDuration }}"
+            description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} will expire in less than 7 days! Immediate action required."
+            dashboard: "https://grafana.moria-lab.com/d/cert-manager"
+            runbook_url: "https://cert-manager.io/docs/troubleshooting/"
+
+        - alert: GitOpsCertificateNotReady
+          expr: |
+            certmanager_certificate_ready_status{condition="False"} == 1
+          for: 10m
+          labels:
+            severity: critical
+            component: cert-manager
+          annotations:
+            summary: "Certificate {{ $labels.name }} is not ready"
+            description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} has been in a not-ready state for 10 minutes."
+            dashboard: "https://grafana.moria-lab.com/d/cert-manager"
+            runbook_url: "https://cert-manager.io/docs/troubleshooting/"

@@ -34,6 +34,26 @@ alertmanager:
   enabled: true
   ingress:
     enabled: false
+  alertmanagerSpec:
+    secrets:
+      - alertmanager-discord-webhook
+    alertmanagerConfigSelector:
+      matchLabels:
+        alertmanagerConfig: gitops-discord
+    alertmanagerConfigNamespaceSelector: {}
+    alertmanagerConfigMatcherStrategy:
+      type: None
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'namespace', 'severity']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      receiver: 'null'
+    receivers:
+      - name: 'null'
 
 grafana:
   enabled: true
