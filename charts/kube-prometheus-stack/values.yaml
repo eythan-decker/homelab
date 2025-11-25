@@ -20,6 +20,7 @@ defaultRules:
     kubernetesResources: true
     kubernetesStorage: true
     kubernetesSystem: true
+    kubeControllerManager: false
     kubeScheduler: false
     kubeStateMetrics: false
     network: false
@@ -82,11 +83,12 @@ kubelet:
         targetLabel: instance
 
 kubeControllerManager:
-  enabled: true
-  endpoints: # ips of servers 
-    - 192.168.10.60
-    - 192.168.10.212
-    - 192.168.10.218
+  enabled: false
+  # Endpoints preserved for future reference if metrics are enabled
+  # endpoints: # ips of servers
+  #   - 192.168.10.60
+  #   - 192.168.10.212
+  #   - 192.168.10.218
 
 coreDns:
   enabled: false
@@ -106,11 +108,12 @@ kubeEtcd:
     targetPort: 2381
 
 kubeScheduler:
-  enabled: true
-  endpoints: # ips of servers
-    - 192.168.10.60
-    - 192.168.10.212
-    - 192.168.10.218
+  enabled: false
+  # Endpoints preserved for future reference if metrics are enabled
+  # endpoints: # ips of servers
+  #   - 192.168.10.60
+  #   - 192.168.10.212
+  #   - 192.168.10.218
 
 kubeProxy:
   enabled: true
