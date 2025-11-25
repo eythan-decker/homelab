@@ -89,6 +89,20 @@ kubectl get configmaps --all-namespaces
 # Check cluster events
 kubectl get events --all-namespaces --sort-by='.lastTimestamp'
 
+# Check Prometheus rules
+kubectl get prometheusrule --all-namespaces
+
+# Check AlertManager configuration
+kubectl get alertmanagerconfig --all-namespaces
+kubectl describe alertmanagerconfig <name> -n monitoring
+
+# View AlertManager logs
+kubectl logs -n monitoring alertmanager-prometheus-alertmanager-0
+
+# Check generated AlertManager config
+kubectl get secret alertmanager-prometheus-alertmanager-generated -n monitoring \
+  -o jsonpath='{.data.alertmanager\.yaml\.gz}' | base64 -d | gunzip
+
 ```
 
 ## GitOps Application Deployment
@@ -140,7 +154,62 @@ charts/<app>/
     └── ingress.yaml    # Environment-specific ingress
 ```
 
-Apps using overlays: kube-prometheus-stack, longhorn, z2m
+Apps using overlays: kube-prometheus-stack (alerting + ingress), longhorn, z2m
+
+### AlertManager Configuration Patterns
+
+**AlertmanagerConfig CRD for Receivers:**
+```yaml
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: <config-name>
+  namespace: monitoring
+  labels:
+    alertmanagerConfig: <label>  # Must match alertmanagerConfigSelector
+spec:
+  route:
+    receiver: '<receiver-name>'
+    groupBy: ['alertname', 'namespace', 'severity']
+  receivers:
+    - name: '<receiver-name>'
+      discordConfigs:
+        - apiURL:
+            name: <secret-name>
+            key: <secret-key>
+          sendResolved: true
+```
+
+**PrometheusRule for Custom Alerts:**
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: <rule-name>
+  namespace: monitoring
+  labels:
+    prometheus: kube-prometheus-stack-prometheus  # Required label
+    role: alert-rules
+spec:
+  groups:
+    - name: <group-name>
+      interval: 5m
+      rules:
+        - alert: <AlertName>
+          expr: <promql-query>
+          for: 5m
+          labels:
+            severity: warning|critical
+            component: <component>
+          annotations:
+            summary: "Alert description"
+```
+
+**Managing Secrets for AlertManager:**
+- Create secrets manually: `kubectl create secret generic <name> -n monitoring --from-literal=<key>=<value>`
+- Mount in AlertManager via `alertmanagerSpec.secrets` in values.yaml
+- Reference in AlertmanagerConfig CRD via `apiURL` field
+- **Never commit secrets to source control**
 
 ## Key Configuration Files
 
@@ -187,6 +256,7 @@ SSL certificates managed by cert-manager with Cloudflare DNS challenge using `mo
 - **Certificate issues**: Verify Cloudflare API credentials in cert-manager
 - **Storage issues**: Check Longhorn UI for replica status
 - **Ingress problems**: Verify Traefik configuration and LoadBalancer IP
+- **AlertManager notifications**: Check receiver config with `kubectl get alertmanagerconfig -n monitoring`, verify secrets exist, check AlertManager logs for delivery errors
 
 The repository uses the domain `moria-lab.com` with static IP `192.168.10.35` for the Traefik LoadBalancer service.
 
