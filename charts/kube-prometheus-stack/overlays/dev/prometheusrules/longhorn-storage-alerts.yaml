@@ -219,22 +219,22 @@ spec:
       rules:
         - alert: GitOpsLonghornBackupFailed
           expr: |
-            longhorn_backup_state == 3
+            longhorn_backup_state == 4
           for: 5m
           labels:
             severity: warning
             component: longhorn
           annotations:
             summary: "Longhorn backup {{ $labels.backup }} FAILED"
-            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} is in error state. Check backup target and logs."
+            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} is in error state (state=4). Check backup target and logs."
 
         - alert: GitOpsLonghornBackupStuck
           expr: |
-            longhorn_backup_state == 1
+            longhorn_backup_state == 2
           for: 2h
           labels:
             severity: warning
             component: longhorn
           annotations:
             summary: "Longhorn backup {{ $labels.backup }} stuck in progress"
-            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} has been in progress for over 2 hours. Investigate backup target connectivity."
+            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} has been in InProgress state for over 2 hours. Investigate backup target connectivity."
