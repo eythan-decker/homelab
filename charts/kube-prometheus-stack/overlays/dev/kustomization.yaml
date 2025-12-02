@@ -6,4 +6,5 @@ namespace: monitoring
 resources:
   - ingress.yaml
   - prometheusrules/gitops-cert-manager-expiration-prometheus.yaml
+  - prometheusrules/longhorn-storage-alerts.yaml
   - alertmanagerconfig-discord.yaml 
