@@ -77,3 +77,15 @@ extraObjects:
   spec:
     basicAuth:
       secret: traefik-dashboard-auth-secret
+
+# Prometheus metrics configuration
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+  serviceMonitor:
+    enabled: true
+    metricRelabelings: []
+    relabelings: []
