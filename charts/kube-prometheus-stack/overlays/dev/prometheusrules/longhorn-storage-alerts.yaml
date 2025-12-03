@@ -1,0 +1,240 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: longhorn-storage-alerts
+  namespace: monitoring
+  labels:
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: longhorn-volume-health
+      interval: 30s
+      rules:
+        - alert: GitOpsLonghornVolumeFault
+          expr: |
+            longhorn_volume_robustness == 3
+          for: 2m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} is FAULTED"
+            description: "Volume {{ $labels.volume }} on node {{ $labels.node }} is in faulted state and cannot serve I/O. Check volume and replica health immediately."
+
+        - alert: GitOpsLonghornVolumeDegraded
+          expr: |
+            longhorn_volume_robustness == 2
+          for: 5m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} is DEGRADED"
+            description: "Volume {{ $labels.volume }} is degraded with fewer replicas than configured. With 2-replica HA, this means ZERO redundancy. Immediate attention required."
+
+        - alert: GitOpsLonghornVolumeReadOnly
+          expr: |
+            longhorn_volume_read_only == 1
+          for: 2m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} is READ-ONLY"
+            description: "Volume {{ $labels.volume }} has entered read-only mode due to errors. Applications cannot write data."
+
+    - name: longhorn-replica-health
+      interval: 30s
+      rules:
+        - alert: GitOpsLonghornVolumeReplicaCountCritical
+          expr: |
+            longhorn_volume_replica_count < 2
+          for: 2m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} has CRITICAL replica count"
+            description: "Volume {{ $labels.volume }} has only {{ $value }} replica(s). With 2-replica HA configuration, this means ZERO redundancy. Data loss imminent if remaining replica fails."
+
+        - alert: GitOpsLonghornReplicaRebuildSlow
+          expr: |
+            longhorn_volume_replica_rebuild_progress < 50
+          for: 30m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Slow replica rebuild for volume {{ $labels.volume }}"
+            description: "Volume {{ $labels.volume }} replica rebuild is at {{ $value }}% after 30 minutes. Investigate disk I/O or network issues."
+
+    - name: longhorn-capacity
+      interval: 1m
+      rules:
+        - alert: GitOpsLonghornVolumeUsageHigh
+          expr: |
+            (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 80
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} is {{ $value | humanizePercentage }} full"
+            description: "Volume {{ $labels.volume }} is at {{ $value | humanizePercentage }} capacity. Consider expanding or cleaning up data."
+
+        - alert: GitOpsLonghornVolumeUsageCritical
+          expr: |
+            (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 90
+          for: 5m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} is CRITICALLY full at {{ $value | humanizePercentage }}"
+            description: "Volume {{ $labels.volume }} is at {{ $value | humanizePercentage }} capacity. IMMEDIATE expansion or cleanup required to prevent write failures."
+
+        - alert: GitOpsLonghornNodeStorageWarning
+          expr: |
+            (longhorn_node_storage_usage_bytes / longhorn_node_storage_capacity_bytes) * 100 > 70
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Node {{ $labels.node }} storage at {{ $value | humanizePercentage }}"
+            description: "Node {{ $labels.node }} storage is at {{ $value | humanizePercentage }} capacity. Plan for capacity expansion."
+
+        - alert: GitOpsLonghornNodeStorageCritical
+          expr: |
+            (longhorn_node_storage_usage_bytes / longhorn_node_storage_capacity_bytes) * 100 > 85
+          for: 5m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Node {{ $labels.node }} storage CRITICALLY full at {{ $value | humanizePercentage }}"
+            description: "Node {{ $labels.node }} storage is at {{ $value | humanizePercentage }} capacity. Longhorn cannot schedule new replicas. IMMEDIATE action required."
+
+        - alert: GitOpsLonghornDiskStorageWarning
+          expr: |
+            (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) * 100 > 70
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Disk {{ $labels.disk }} on {{ $labels.node }} at {{ $value | humanizePercentage }}"
+            description: "Disk {{ $labels.disk }} on node {{ $labels.node }} is at {{ $value | humanizePercentage }} capacity."
+
+        - alert: GitOpsLonghornDiskStorageCritical
+          expr: |
+            (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) * 100 > 85
+          for: 5m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Disk {{ $labels.disk }} on {{ $labels.node }} CRITICALLY full at {{ $value | humanizePercentage }}"
+            description: "Disk {{ $labels.disk }} on node {{ $labels.node }} is at {{ $value | humanizePercentage }} capacity. Cannot schedule replicas on this disk."
+
+    - name: longhorn-node-health
+      interval: 1m
+      rules:
+        - alert: GitOpsLonghornNodeDown
+          expr: |
+            longhorn_node_status{condition="ready"} == 0
+          for: 5m
+          labels:
+            severity: critical
+            component: longhorn
+          annotations:
+            summary: "Longhorn node {{ $labels.node }} is DOWN"
+            description: "Longhorn node {{ $labels.node }} is not ready. Replicas on this node are unavailable."
+
+        - alert: GitOpsLonghornNodeNotSchedulable
+          expr: |
+            longhorn_node_status{condition="schedulable"} == 0
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Longhorn node {{ $labels.node }} is not schedulable"
+            description: "Longhorn node {{ $labels.node }} cannot schedule new replicas. Check node conditions and disk space."
+
+        - alert: GitOpsLonghornNodeCPUHigh
+          expr: |
+            (longhorn_node_cpu_usage_millicpu / longhorn_node_cpu_capacity_millicpu) * 100 > 90
+          for: 15m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "High CPU usage on Longhorn node {{ $labels.node }}"
+            description: "Node {{ $labels.node }} CPU usage is at {{ $value | humanizePercentage }}. May impact storage performance."
+
+    - name: longhorn-performance
+      interval: 1m
+      rules:
+        - alert: GitOpsLonghornVolumeHighReadLatency
+          expr: |
+            longhorn_volume_read_latency / 1000000 > 20
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "High read latency on volume {{ $labels.volume }}"
+            description: "Volume {{ $labels.volume }} has read latency of {{ $value }}ms. Investigate disk I/O or network issues."
+
+        - alert: GitOpsLonghornVolumeHighWriteLatency
+          expr: |
+            longhorn_volume_write_latency / 1000000 > 20
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "High write latency on volume {{ $labels.volume }}"
+            description: "Volume {{ $labels.volume }} has write latency of {{ $value }}ms. Investigate disk I/O or network issues."
+
+        - alert: GitOpsLonghornInstanceManagerCPUHigh
+          expr: |
+            (
+              rate(container_cpu_usage_seconds_total{namespace="longhorn-system",pod=~"instance-manager-.*"}[5m])
+              /
+              (container_spec_cpu_quota{namespace="longhorn-system",pod=~"instance-manager-.*"} / 100000)
+            ) > 3
+          for: 10m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "High CPU on instance manager {{ $labels.pod }}"
+            description: "Instance manager {{ $labels.pod }} CPU usage is {{ $value }}x requested. May indicate I/O bottleneck."
+
+    - name: longhorn-backup
+      interval: 5m
+      rules:
+        - alert: GitOpsLonghornBackupFailed
+          expr: |
+            longhorn_backup_state == 4
+          for: 5m
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Longhorn backup {{ $labels.backup }} FAILED"
+            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} is in error state (state=4). Check backup target and logs."
+
+        - alert: GitOpsLonghornBackupStuck
+          expr: |
+            longhorn_backup_state == 2
+          for: 2h
+          labels:
+            severity: warning
+            component: longhorn
+          annotations:
+            summary: "Longhorn backup {{ $labels.backup }} stuck in progress"
+            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} has been in InProgress state for over 2 hours. Investigate backup target connectivity."

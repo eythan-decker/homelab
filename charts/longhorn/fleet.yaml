@@ -7,6 +7,8 @@ helm:
   values:
     persistence:
       defaultClassReplicaCount: 2
+  valuesFiles:
+  - ./values.yaml
 kustomize:
   dir: overlays/dev
 diff:

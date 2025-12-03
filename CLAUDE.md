@@ -132,10 +132,11 @@ kustomize:
 **Infrastructure Services:**
 - cert-manager v1.17.2 (SSL automation)
 - traefik v33.2.1 (ingress controller, LoadBalancer IP: 192.168.10.35)
-- longhorn v1.8.1 (distributed storage, 2-replica HA)
+- longhorn v1.9.2 (distributed storage, 2-replica HA)
 
 **Monitoring:**
 - kube-prometheus-stack v69.2.4 (Prometheus, Grafana, AlertManager)
+- Custom PrometheusRules: cert-manager expiration (3 alerts), longhorn storage (19 alerts)
 
 **Home Automation:**
 - Home Assistant 2024.9.3 (hostNetwork enabled, node affinity)
@@ -210,6 +211,58 @@ spec:
 - Mount in AlertManager via `alertmanagerSpec.secrets` in values.yaml
 - Reference in AlertmanagerConfig CRD via `apiURL` field
 - **Never commit secrets to source control**
+
+**Alert Naming Convention:**
+- All custom alerts use "GitOps" prefix for consistency (e.g., `GitOpsLonghornVolumeFault`, `GitOpsCertificateExpiringSoon`)
+- Stored in `charts/kube-prometheus-stack/overlays/dev/prometheusrules/`
+- Rule group names do NOT use prefix (e.g., `longhorn-volume-health`, `cert-manager.expiration`)
+
+### Longhorn Monitoring Configuration
+
+**Enabling Metrics Collection:**
+Longhorn v1.9.2 requires explicit ServiceMonitor enablement via Helm values:
+
+```yaml
+# charts/longhorn/values.yaml
+metrics:
+  serviceMonitor:
+    enabled: true
+```
+
+This creates `longhorn-prometheus-servicemonitor` in the `longhorn-system` namespace, exposing metrics on port 9500.
+
+**Longhorn Backup State Values (v1.3.0+):**
+```
+0 = New
+1 = Pending
+2 = InProgress
+3 = Completed  ← Success state (not error!)
+4 = Error      ← Actual failure state
+5 = Unknown
+```
+
+**IMPORTANT:** Longhorn changed state mappings in v1.3.0. Older documentation may show state 3 as "Error" - this is incorrect. Always use state 4 for backup failure alerts.
+
+**Validating Metrics Availability:**
+```bash
+# Port-forward to Longhorn manager for direct metrics access
+kubectl port-forward -n longhorn-system daemonset/longhorn-manager 9500:9500 &
+curl http://localhost:9500/metrics | grep longhorn_volume_state
+
+# Check Prometheus is scraping Longhorn targets
+kubectl port-forward -n monitoring svc/prometheus-prometheus 9090:9090 &
+curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets[] | select(.labels.namespace == "longhorn-system")'
+
+# Verify specific metrics exist
+curl -s 'http://localhost:9090/api/v1/query?query=longhorn_volume_robustness' | jq '.data.result | length'
+```
+
+**Key Longhorn Metrics:**
+- `longhorn_volume_robustness`: Volume health (1=Healthy, 2=Degraded, 3=Faulted)
+- `longhorn_volume_state`: Volume operational state
+- `longhorn_volume_replica_count`: Current replica count per volume
+- `longhorn_node_storage_capacity_bytes`: Node-level storage capacity
+- `longhorn_backup_state`: Backup job status (use state values above)
 
 ## Key Configuration Files
 
