@@ -28,6 +28,12 @@ ports:
         to: websecure
         scheme: https
         permanent: true
+  metrics:
+    expose:
+      default: false
+    exposedPort: 9100
+    port: 9100
+    protocol: TCP
 
 ingressRoute:
   dashboard:
