@@ -85,7 +85,3 @@ metrics:
     addEntryPointsLabels: true
     addRoutersLabels: true
     addServicesLabels: true
-  serviceMonitor:
-    enabled: true
-    metricRelabelings: []
-    relabelings: []
