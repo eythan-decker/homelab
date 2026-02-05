@@ -51,9 +51,11 @@ variable "vms" {
         iothread = optional(bool, false)
       }))
       virtio2 = optional(object({
-        size     = string
-        storage  = string
-        iothread = optional(bool, false)
+        size      = string
+        storage   = string
+        iothread  = optional(bool, false)
+        format    = optional(string, "raw")
+        replicate = optional(bool, true)
       }))
     }))
     usb = optional(object({

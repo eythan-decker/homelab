@@ -17,9 +17,9 @@ locals {
       memory      = coalesce(vm.memory, var.class_defaults.memory)
 
       disks = {
-        virtio0 = vm.disks != null && vm.disks.virtio0 != null ? vm.disks.virtio0 : var.class_defaults.disks.virtio0
-        virtio1 = vm.disks != null && vm.disks.virtio1 != null ? vm.disks.virtio1 : var.class_defaults.disks.virtio1
-        virtio2 = vm.disks != null ? vm.disks.virtio2 : null
+        virtio0 = try(vm.disks.virtio0, null) != null ? vm.disks.virtio0 : var.class_defaults.disks.virtio0
+        virtio1 = try(vm.disks.virtio1, null) != null ? vm.disks.virtio1 : var.class_defaults.disks.virtio1
+        virtio2 = try(vm.disks.virtio2, null)
       }
 
       usb = vm.usb
@@ -85,9 +85,11 @@ resource "proxmox_vm_qemu" "pve_vm" {
         for_each = local.vm_configs[each.key].disks.virtio2 != null ? [1] : []
         content {
           disk {
-            storage  = local.vm_configs[each.key].disks.virtio2.storage
-            size     = local.vm_configs[each.key].disks.virtio2.size
-            iothread = try(local.vm_configs[each.key].disks.virtio2.iothread, true)
+            storage   = local.vm_configs[each.key].disks.virtio2.storage
+            size      = local.vm_configs[each.key].disks.virtio2.size
+            iothread  = try(local.vm_configs[each.key].disks.virtio2.iothread, true)
+            format    = try(local.vm_configs[each.key].disks.virtio2.format, "raw")
+            replicate = try(local.vm_configs[each.key].disks.virtio2.replicate, true)
           }
         }
       }

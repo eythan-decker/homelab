@@ -25,7 +25,7 @@ module "ella_class_vms" {
       description = "Ella Class VM. Critical K3s worker node non HA."
       disks = {
         virtio0 = { size = "232G", storage = "local-lvm" }
-        virtio2 = { size = "1200G", storage = "k8s-dir-storage", iothread = true }
+        virtio2 = { size = "1200G", storage = "k8s-dir-storage", iothread = true, format = "qcow2" }
       }
     }
   }
