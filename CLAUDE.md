@@ -11,7 +11,9 @@ This homelab follows a layered Infrastructure-as-Code approach:
 ### VM Classes and Resource Allocation
 
 - **Ella Class**: 4 CPU cores, 4GB RAM - Used for K3s master nodes and critical workers (VM IDs: 101-104)
+  - VM 104 has non-default config: 232G root disk + 1200G additional storage disk (k8s-dir-storage)
 - **Elliot Class**: 6 CPU cores, 16GB RAM - Used for K3s agent nodes running workloads (VM ID: 120)
+  - VM 120 has non-default config: 232G root disk + USB passthrough (1a86:55d4)
 
 The cluster runs K3s in HA mode with embedded etcd across 3 control plane nodes plus 2 agent nodes.
 
@@ -34,7 +36,16 @@ terraform plan
 terraform apply -auto-approve
 ```
 
-Uses the `proxmox_vms` module to create VMs from Packer golden images with cloud-init configuration.
+The `proxmox_vms` module uses `for_each` with a map of VM definitions keyed by VM ID (provider: telmate/proxmox v3.0.1-rc6). Each module call defines:
+- `class_defaults`: Base CPU, memory, and disk config shared by all VMs in the class
+- `vms`: Per-VM map where individual VMs can override defaults (disk sizes, additional disks, USB passthrough)
+
+Optional resources use dynamic blocks (`virtio2`, `usbs`) - they're only created when defined in the VM map.
+
+**Terraform gotchas:**
+- Terraform does NOT short-circuit `&&` - use `try(vm.disks.virtio0, null)` instead of `vm.disks != null && vm.disks.virtio0`
+- Proxmox provider disk attributes `format` and `replicate` must be explicitly set or they cause drift
+- **State migration**: When changing resource addressing (e.g., count to for_each), use `terraform state mv` to remap resources before running plan
 
 ### Ansible Configuration Management
 ```bash

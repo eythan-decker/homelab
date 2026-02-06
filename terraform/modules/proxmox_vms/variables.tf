@@ -1,42 +1,71 @@
 variable "proxmox_node_name" {
-    type = string
-    description = "Name of the Proxmox Node to deploy the VMs"
-    default = "pve01"
+  type        = string
+  description = "Name of the Proxmox Node to deploy the VMs"
+  default     = "pve01"
 }
 
 variable "vm_template_name" {
-    type = string
-    description = "Name of the Proxmox VM template image saved currently on the node"
-    default = "ubuntu-server-noble"
-}
-
-variable "vm_id_list" {
-  description = "A list of VM IDs to be Created/Updated."
-  type        = list(number)
+  type        = string
+  description = "Name of the Proxmox VM template image saved currently on the node"
+  default     = "ubuntu-server-noble"
 }
 
 variable "vm_class_name" {
-    type = string
-    description = "Name of the class of VM that is being deployed. Ella, Elliot, Ezra, Emily"
-    default = "pve-vm"
+  type        = string
+  description = "Name of the class of VM that is being deployed (e.g., pve-ella, pve-elliot)"
 }
 
-variable "vm_desc" {
-    type = list(string)
-    description = "Description of the VM to be displayed in the proxmox UI"
+variable "class_defaults" {
+  description = "Default resource allocation for this VM class"
+  type = object({
+    cpu_cores = number
+    memory    = number
+    disks = object({
+      virtio0 = object({
+        size    = string
+        storage = string
+      })
+      virtio1 = object({
+        size    = string
+        storage = string
+      })
+    })
+  })
 }
 
-variable "vm_cpu_cores" {
-    type = number
-    description = "Ammount of CPU Cores to be used by the VM(s)"
-}
-
-variable "vm_memory" {
-    type = number
-    description = "Ammount of memory to be used by the VM(s)"
+variable "vms" {
+  description = "Map of VM definitions keyed by VM ID"
+  type = map(object({
+    description = string
+    cpu_cores   = optional(number)
+    memory      = optional(number)
+    disks = optional(object({
+      virtio0 = optional(object({
+        size     = string
+        storage  = string
+        iothread = optional(bool, false)
+      }))
+      virtio1 = optional(object({
+        size     = string
+        storage  = string
+        iothread = optional(bool, false)
+      }))
+      virtio2 = optional(object({
+        size      = string
+        storage   = string
+        iothread  = optional(bool, false)
+        format    = optional(string, "raw")
+        replicate = optional(bool, true)
+      }))
+    }))
+    usb = optional(object({
+      device_id = string
+      usb3      = optional(bool, false)
+    }))
+  }))
 }
 
 variable "vm_serveradmin_password" {
-    type = string
-    sensitive = true
+  type      = string
+  sensitive = true
 }
