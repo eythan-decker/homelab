@@ -17,7 +17,7 @@ spec:
         node-role: home-assistant
       containers:
       - name: zwave
-        image: zwavejs/zwave-js-ui:9.30.1
+        image: zwavejs/zwave-js-ui:11.5.2
         ports:
         - containerPort: 8091
           name: http
