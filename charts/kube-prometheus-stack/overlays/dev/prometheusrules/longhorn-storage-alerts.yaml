@@ -74,25 +74,25 @@ spec:
       rules:
         - alert: GitOpsLonghornVolumeUsageHigh
           expr: |
-            (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 80
+            (kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes) * 100 > 80
           for: 10m
           labels:
             severity: warning
             component: longhorn
           annotations:
-            summary: "Longhorn volume {{ $labels.volume }} is {{ $value | humanizePercentage }} full"
-            description: "Volume {{ $labels.volume }} is at {{ $value | humanizePercentage }} capacity. Consider expanding or cleaning up data."
+            summary: "Longhorn volume {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is {{ $value | humanizePercentage }} full"
+            description: "PVC {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is at {{ $value | humanizePercentage }} capacity. Consider expanding or cleaning up data."
 
         - alert: GitOpsLonghornVolumeUsageCritical
           expr: |
-            (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 90
+            (kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes) * 100 > 90
           for: 5m
           labels:
             severity: critical
             component: longhorn
           annotations:
-            summary: "Longhorn volume {{ $labels.volume }} is CRITICALLY full at {{ $value | humanizePercentage }}"
-            description: "Volume {{ $labels.volume }} is at {{ $value | humanizePercentage }} capacity. IMMEDIATE expansion or cleanup required to prevent write failures."
+            summary: "Longhorn volume {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is CRITICALLY full at {{ $value | humanizePercentage }}"
+            description: "PVC {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is at {{ $value | humanizePercentage }} capacity. IMMEDIATE expansion or cleanup required to prevent write failures."
 
         - alert: GitOpsLonghornNodeStorageWarning
           expr: |
