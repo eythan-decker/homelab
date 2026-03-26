@@ -28,6 +28,12 @@ ports:
         to: websecure
         scheme: https
         permanent: true
+  metrics:
+    port: 9100
+    expose:
+      default: true
+    exposedPort: 9100
+    protocol: TCP
 
 ingressRoute:
   dashboard:
@@ -77,3 +83,11 @@ extraObjects:
   spec:
     basicAuth:
       secret: traefik-dashboard-auth-secret
+
+# Prometheus metrics configuration
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true

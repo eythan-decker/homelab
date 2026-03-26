@@ -1,0 +1,120 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: traefik-alerts
+  namespace: monitoring
+  labels:
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: traefik-availability
+      interval: 30s
+      rules:
+        - alert: GitOpsTraefikDown
+          expr: |
+            up{job="traefik-metrics"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            component: traefik
+          annotations:
+            summary: "Traefik instance {{ $labels.instance }} is DOWN"
+            description: "Traefik instance {{ $labels.instance }} in namespace {{ $labels.namespace }} has been down for 2 minutes. Ingress traffic may be impacted."
+
+        - alert: GitOpsTraefikHighReplicaFailure
+          expr: |
+            sum(kube_deployment_status_replicas_available{deployment="traefik", namespace="traefik-system"}) < 2
+          for: 5m
+          labels:
+            severity: critical
+            component: traefik
+          annotations:
+            summary: "Traefik has fewer than 2 replicas available"
+            description: "Traefik deployment has {{ $value }} replicas available (expected 3). High availability is compromised."
+
+    - name: traefik-error-rates
+      interval: 1m
+      rules:
+        - alert: GitOpsTraefikHigh4xxErrorRate
+          expr: |
+            (sum(rate(traefik_service_requests_total{code=~"4.."}[5m])) by (service) / sum(rate(traefik_service_requests_total[5m])) by (service)) * 100 > 10
+          for: 5m
+          labels:
+            severity: warning
+            component: traefik
+          annotations:
+            summary: "High 4xx error rate on service {{ $labels.service }}"
+            description: "Service {{ $labels.service }} has {{ $value | humanizePercentage }} 4xx error rate over the last 5 minutes."
+
+        - alert: GitOpsTraefikHigh5xxErrorRate
+          expr: |
+            (sum(rate(traefik_service_requests_total{code=~"5.."}[5m])) by (service) / sum(rate(traefik_service_requests_total[5m])) by (service)) * 100 > 5
+          for: 5m
+          labels:
+            severity: critical
+            component: traefik
+          annotations:
+            summary: "CRITICAL: High 5xx error rate on service {{ $labels.service }}"
+            description: "Service {{ $labels.service }} has {{ $value | humanizePercentage }} 5xx error rate. Backend application is failing."
+
+        - alert: GitOpsTraefikEntrypointHigh5xxRate
+          expr: |
+            (sum(rate(traefik_entrypoint_requests_total{code=~"5.."}[5m])) by (entrypoint) / sum(rate(traefik_entrypoint_requests_total[5m])) by (entrypoint)) * 100 > 3
+          for: 5m
+          labels:
+            severity: warning
+            component: traefik
+          annotations:
+            summary: "High 5xx error rate on entrypoint {{ $labels.entrypoint }}"
+            description: "Entrypoint {{ $labels.entrypoint }} has {{ $value | humanizePercentage }} 5xx error rate. Multiple backends may be failing."
+
+    - name: traefik-latency
+      interval: 1m
+      rules:
+        - alert: GitOpsTraefikHighLatency
+          expr: |
+            histogram_quantile(0.95, sum(rate(traefik_service_request_duration_seconds_bucket[5m])) by (service, le)) > 2
+          for: 10m
+          labels:
+            severity: warning
+            component: traefik
+          annotations:
+            summary: "High latency on service {{ $labels.service }}"
+            description: "Service {{ $labels.service }} p95 latency is {{ $value }}s (threshold: 2s). Users may experience slow response times."
+
+        - alert: GitOpsTraefikVeryHighLatency
+          expr: |
+            histogram_quantile(0.95, sum(rate(traefik_service_request_duration_seconds_bucket[5m])) by (service, le)) > 5
+          for: 5m
+          labels:
+            severity: critical
+            component: traefik
+          annotations:
+            summary: "CRITICAL: Very high latency on service {{ $labels.service }}"
+            description: "Service {{ $labels.service }} p95 latency is {{ $value }}s. Severe performance degradation."
+
+        - alert: GitOpsTraefikEntrypointHighLatency
+          expr: |
+            histogram_quantile(0.95, sum(rate(traefik_entrypoint_request_duration_seconds_bucket[5m])) by (entrypoint, le)) > 3
+          for: 10m
+          labels:
+            severity: warning
+            component: traefik
+          annotations:
+            summary: "High latency on entrypoint {{ $labels.entrypoint }}"
+            description: "Entrypoint {{ $labels.entrypoint }} p95 latency is {{ $value }}s. Overall ingress performance is degraded."
+
+    - name: traefik-traffic-anomalies
+      interval: 1m
+      rules:
+        - alert: GitOpsTraefikHighRequestRate
+          expr: |
+            sum(rate(traefik_service_requests_total[1m])) > 100
+          for: 5m
+          labels:
+            severity: info
+            component: traefik
+          annotations:
+            summary: "Unusually high request rate detected"
+            description: "Traefik is handling {{ $value }} requests/sec. This may indicate a traffic spike, DDoS attempt, or bot activity."
